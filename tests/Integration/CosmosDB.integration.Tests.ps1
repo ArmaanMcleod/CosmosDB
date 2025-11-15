@@ -1587,8 +1587,11 @@ Describe 'Cosmos DB Module' -Tag 'Integration' {
 
         It 'Should return raw JSON string' {
             $script:result | Should -BeOfType [System.String]
-            $script:result | Should -Match '"statusCode"'
-            $script:result | Should -Match '"resourceBody"'
+            $script:result | Test-Json | Should -Be $true
+            $parsedResult = $script:result | ConvertFrom-Json
+            $parsedResult[0].statusCode | Should -Be 201
+            $parsedResult[0].resourceBody.id | Should -Be $script:testJsonDocuments[0].id
+            $parsedResult[0].resourceBody.content | Should -Be $script:testJsonDocuments[0].content
         }
     }
 
