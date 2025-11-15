@@ -6,7 +6,20 @@
 
 version: 2
 updates:
- - package-ecosystem: "devcontainers"
-   directory: "/"
-   schedule:
-     interval: weekly
+  # Dev container feature dependencies
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: weekly
+
+  # NuGet dependencies for C# classes (CosmosDB.csproj)
+  - package-ecosystem: "nuget"
+    directory: "/source/classes/CosmosDB"
+    schedule:
+      interval: weekly
+
+  # Azure Pipelines GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: weekly

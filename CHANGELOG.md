@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Operational Changes
+
+- Added [Spec-Kit](github.com/GitHub/spec-kit) support.
+- Added `specify/memory/constitution.md` to define the module's
+  governing principles and development standards.
+- Renamed `.github\copilot-instructions.md` to `\AGENTS.md` to align to industry
+  standards for AI-assisted development.
+
 ## [6.1.0] - 2025-06-08
 
 ### Fixed

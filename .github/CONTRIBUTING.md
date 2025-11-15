@@ -1,5 +1,7 @@
 # Contributing
 
+[![Spec Kit Enabled](https://img.shields.io/badge/Spec_Kit-Enabled-blue?logo=github&logoColor=white)](https://github.com/github/spec-kit)
+
 If you'd like to contribute to this project, there are several different methods:
 
 - Submit a [Pull Request](https://www.github.com/PlagueHO/CosmosDB/pulls) against

@@ -1,20 +1,22 @@
 {
-    // Use a custom PowerShell Script Analyzer settings file for this workspace.
-    // Relative paths for this setting are always relative to the workspace root dir.
-    "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
-
-    // When enabled, will trim trailing whitespace when you save a file.
-    "powershell.codeFormatting.openBraceOnSameLine": false,
-    "powershell.codeFormatting.newLineAfterOpenBrace": false,
-    "powershell.codeFormatting.newLineAfterCloseBrace": true,
-    "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
-    "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
-    "powershell.codeFormatting.whitespaceAroundOperator": true,
-    "powershell.codeFormatting.whitespaceAfterSeparator": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": false,
-    "powershell.codeFormatting.preset": "Custom",
-    "files.trimTrailingWhitespace": true,
-    "files.insertFinalNewline": true,
-    "dotnet.defaultSolution": "CosmosDB.sln"
+    "chat.promptFilesRecommendations": {
+        "speckit.constitution": true,
+        "speckit.specify": true,
+        "speckit.plan": true,
+        "speckit.tasks": true,
+        "speckit.implement": true
+    },
+    "chat.tools.terminal.autoApprove": {
+        ".specify/scripts/bash/": true,
+        ".specify/scripts/powershell/": true
+    },
+    "github.copilot.chat.anthropic.thinking.enabled": false,
+    "github.copilot.chat.codesearch.enabled": true,
+    "github.copilot.chat.commitMessageGeneration.instructions": [
+        {
+            "text": "The first line should be summary of no more than 50 characters starting with classification of commit from: `CHORE:`|`FIX:`|`CHANGE:`|`BREAKING CHANGE:`|`TESTS:`|`SECURITY:`|`COMPLEX:`. The second line should be blank. The following lines should be the full summary with each item starting with a `-`. Any summary item that is security related should start with `SECURITY:`. Any summary item change that causes a breaking change to a feature/interface/dependency should start with `BREAKING CHANGE:`"
+        }
+    ],
+    "github.copilot.chat.newWorkspace.useContext7": true,
+    "chat.todoListTool.descriptionField": true
 }
-
