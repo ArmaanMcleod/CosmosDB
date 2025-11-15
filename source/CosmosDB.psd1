@@ -58,6 +58,7 @@
         'formats\triggers.formats.ps1xml',
         'formats\userdefinedfunctions.formats.ps1xml',
         'formats\users.formats.ps1xml'
+        'formats\transactionalbatch.formats.ps1xml'
     )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
