@@ -1,7 +1,7 @@
 function New-CosmosDbTransactionalBatch 
 {
     [CmdletBinding()]
-    [OutputType([Object[]])]
+    [OutputType([System.Object[]])]
     param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]

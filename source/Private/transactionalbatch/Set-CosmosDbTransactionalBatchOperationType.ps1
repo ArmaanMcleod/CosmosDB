@@ -1,9 +1,11 @@
 function Set-CosmosDbTransactionalBatchOperationType
 {
     [CmdletBinding()]
+    [OutputType([System.Object[]])]
     param
     (
         [Parameter(Mandatory = $true)]
+        [System.Object[]]
         $BatchOperations
     )
 
