@@ -97,7 +97,8 @@
         'Set-CosmosDbAccount', 'Set-CosmosDbAttachment',
         'Set-CosmosDbCollection', 'Set-CosmosDbDocument', 'Set-CosmosDbOffer',
         'Set-CosmosDbStoredProcedure', 'Set-CosmosDbTrigger',
-        'Set-CosmosDbUser', 'Set-CosmosDbUserDefinedFunction')
+        'Set-CosmosDbUser', 'Set-CosmosDbUserDefinedFunction',
+        'New-CosmosDbTransactionalBatch')
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
