@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added `New-CosmosDbTransactionalBatch` function to create a new transactional batch
+  for performing multiple operations on items in a Cosmos DB container.
+
 ## [6.1.0] - 2025-06-08
 
 ### Fixed
