@@ -38,13 +38,6 @@ function New-CosmosDbTransactionalBatch
         $ReturnJson
     )
 
-    $operationDescription = $LocalizedData.ShouldExecuteTransactionalBatch -f $Documents.Count, $OperationType.ToLower(), $CollectionId, $PartitionKey
-    
-    if (-not $PSCmdlet.ShouldProcess('Azure', $operationDescription))
-    {
-        return
-    }
-
     $operations = $Documents | ForEach-Object {
         @{
             operationType = $OperationType
@@ -62,27 +55,31 @@ function New-CosmosDbTransactionalBatch
         'x-ms-documentdb-partitionkey' = "[`"$PartitionKey`"]"
     }
 
-    $result = Invoke-CosmosDbRequest `
-        -Context $Context `
-        -Method 'Post' `
-        -ResourceType 'docs' `
-        -ResourcePath $resourcePath `
-        -Body $batchBody `
-        -Headers $headers `
-        -ApiVersion '2018-12-31'
+    $shouldProcessMessage = $LocalizedData.ShouldExecuteTransactionalBatch -f $Documents.Count, $OperationType.ToLower(), $CollectionId, $PartitionKey
+    if ($PSCmdlet.ShouldProcess('Azure', $shouldProcessMessage))
+    {
+        $result = Invoke-CosmosDbRequest `
+            -Context $Context `
+            -Method 'Post' `
+            -ResourceType 'docs' `
+            -ResourcePath $resourcePath `
+            -Body $batchBody `
+            -Headers $headers `
+            -ApiVersion '2018-12-31'
 
-    if ($ReturnJson.IsPresent)
-    {
-        return $result.Content
-    }
+        if ($ReturnJson.IsPresent)
+        {
+            return $result.Content
+        }
 
-    try
-    {
-        $batchOperations = $result.Content | ConvertFrom-Json
-        return (Set-CosmosDbTransactionalBatchOperationType -BatchOperations $batchOperations)
-    }
-    catch
-    {
-        New-CosmosDbInvalidOperationException -Message ($LocalizedData.ErrorConvertingDocumentJsonToObject)
+        try
+        {
+            $batchOperations = $result.Content | ConvertFrom-Json
+            return (Set-CosmosDbTransactionalBatchOperationType -BatchOperations $batchOperations)
+        }
+        catch
+        {
+            New-CosmosDbInvalidOperationException -Message ($LocalizedData.ErrorConvertingDocumentJsonToObject)
+        }
     }
 }

@@ -5,7 +5,12 @@ param ()
 $ProjectPath = "$PSScriptRoot\..\.." | Convert-Path
 $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
         ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try { Test-ModuleManifest $_.FullName -ErrorAction Stop } catch { $false } )
+        $(try
+            { Test-ModuleManifest $_.FullName -ErrorAction Stop 
+            }
+            catch
+            { $false 
+            } )
     }).BaseName
 
 Import-Module -Name $ProjectName -Force
@@ -303,6 +308,67 @@ InModuleScope $ProjectName {
 
                 Assert-MockCalled `
                     -CommandName New-CosmosDbInvalidOperationException `
+                    -Exactly -Times 1
+            }
+        }
+
+        Context 'When called with WhatIf parameter' {
+            $script:result = $null
+
+            Mock `
+                -CommandName Invoke-CosmosDbRequest
+
+            $newCosmosDbTransactionalBatchParameters = @{
+                Context      = $script:testContext
+                CollectionId = $script:testCollection
+                PartitionKey = $script:testPartitionKey
+                Documents    = $script:testDocuments
+                WhatIf       = $true
+            }
+
+            It 'Should not throw exception' {
+                { $script:result = New-CosmosDbTransactionalBatch @newCosmosDbTransactionalBatchParameters } | Should -Not -Throw
+            }
+
+            It 'Should return null when WhatIf is specified' {
+                $script:result | Should -BeNullOrEmpty
+            }
+
+            It 'Should not call Invoke-CosmosDbRequest when WhatIf is specified' {
+                Assert-MockCalled `
+                    -CommandName Invoke-CosmosDbRequest `
+                    -Exactly -Times 0
+            }
+        }
+
+        Context 'When called with Confirm parameter set to false' {
+            $script:result = $null
+
+            Mock `
+                -CommandName Invoke-CosmosDbRequest `
+                -MockWith { $script:testBatchResult }
+
+            $newCosmosDbTransactionalBatchParameters = @{
+                Context      = $script:testContext
+                CollectionId = $script:testCollection
+                PartitionKey = $script:testPartitionKey
+                Documents    = $script:testDocuments
+                Confirm      = $false
+            }
+
+            It 'Should not throw exception' {
+                { $script:result = New-CosmosDbTransactionalBatch @newCosmosDbTransactionalBatchParameters } | Should -Not -Throw
+            }
+
+            It 'Should return expected result when Confirm is false' {
+                $script:result | Should -HaveCount 2
+                $script:result[0].statusCode | Should -Be 201
+                $script:result[1].statusCode | Should -Be 201
+            }
+
+            It 'Should call Invoke-CosmosDbRequest when Confirm is false' {
+                Assert-MockCalled `
+                    -CommandName Invoke-CosmosDbRequest `
                     -Exactly -Times 1
             }
         }
