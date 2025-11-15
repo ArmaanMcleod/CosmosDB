@@ -1,6 +1,6 @@
 function New-CosmosDbTransactionalBatch 
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([System.Object[]])]
     param (
         [Parameter(Mandatory = $true)]
@@ -53,6 +53,13 @@ function New-CosmosDbTransactionalBatch
         'x-ms-cosmos-is-batch-request' = $IsAtomic
         'x-ms-cosmos-batch-atomic'     = $true
         'x-ms-documentdb-partitionkey' = "[`"$PartitionKey`"]"
+    }
+
+    $operationDescription = $LocalizedData.ShouldExecuteTransactionalBatch -f $Documents.Count, $OperationType.ToLower(), $CollectionId, $PartitionKey
+    
+    if (-not $PSCmdlet.ShouldProcess('Azure', $operationDescription))
+    {
+        return
     }
 
     $result = Invoke-CosmosDbRequest `
