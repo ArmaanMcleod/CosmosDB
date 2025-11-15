@@ -72,7 +72,7 @@ function New-CosmosDbTransactionalBatch
     try
     {
         $batchOperations = $result.Content | ConvertFrom-Json
-        return $batchOperations
+        return (Set-CosmosDbTransactionalBatchOperationType -BatchOperations $batchOperations)
     }
     catch
     {
