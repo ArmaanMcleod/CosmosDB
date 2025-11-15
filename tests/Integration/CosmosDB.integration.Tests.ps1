@@ -1469,6 +1469,203 @@ Describe 'Cosmos DB Module' -Tag 'Integration' {
         }
     }
 
+    Context 'When creating multiple documents using transactional batch with Create operation' {
+        It 'Should not throw an exception' {
+            $batchDocument1 = @{
+                id      = [Guid]::NewGuid().ToString()
+                content = "Batch document 1"
+                type    = "batchTest"
+            }
+            $batchDocument2 = @{
+                id      = [Guid]::NewGuid().ToString()
+                content = "Batch document 2" 
+                type    = "batchTest"
+            }
+            $script:testBatchDocuments = @($batchDocument1, $batchDocument2)
+            
+            $script:result = New-CosmosDbTransactionalBatch `
+                -Context $script:testContext `
+                -CollectionId $script:testCollection `
+                -PartitionKey $script:testDocumentId `
+                -Documents $script:testBatchDocuments `
+                -OperationType 'Create' `
+                -Verbose
+        }
+
+        It 'Should return expected batch operation results' {
+            $script:result | Should -HaveCount 2
+            $script:result[0].statusCode | Should -Be 201
+            $script:result[1].statusCode | Should -Be 201
+            $script:result[0].resourceBody.id | Should -Be $script:testBatchDocuments[0].id
+            $script:result[1].resourceBody.id | Should -Be $script:testBatchDocuments[1].id
+        }
+    }
+
+    Context 'When creating multiple documents using transactional batch with Upsert operation' {
+        It 'Should not throw an exception' {
+            $upsertDocument1 = @{
+                id      = [Guid]::NewGuid().ToString()
+                content = "Upsert document 1"
+                type    = "upsertTest"
+            }
+            $upsertDocument2 = @{
+                id      = [Guid]::NewGuid().ToString()
+                content = "Upsert document 2"
+                type    = "upsertTest"
+            }
+            $script:testUpsertDocuments = @($upsertDocument1, $upsertDocument2)
+            
+            $script:result = New-CosmosDbTransactionalBatch `
+                -Context $script:testContext `
+                -CollectionId $script:testCollection `
+                -PartitionKey $script:testDocumentId `
+                -Documents $script:testUpsertDocuments `
+                -OperationType 'Upsert' `
+                -Verbose
+        }
+
+        It 'Should return expected batch operation results' {
+            $script:result | Should -HaveCount 2
+            $script:result[0].statusCode | Should -Be 201
+            $script:result[1].statusCode | Should -Be 201
+            $script:result[0].resourceBody.id | Should -Be $script:testUpsertDocuments[0].id
+            $script:result[1].resourceBody.id | Should -Be $script:testUpsertDocuments[1].id
+        }
+    }
+
+    Context 'When creating documents using non-atomic transactional batch' {
+        It 'Should not throw an exception' {
+            $nonAtomicDocument1 = @{
+                id      = [Guid]::NewGuid().ToString()
+                content = "Non-atomic document 1"
+                type    = "nonAtomicTest"
+            }
+            $nonAtomicDocument2 = @{
+                id      = [Guid]::NewGuid().ToString()
+                content = "Non-atomic document 2"
+                type    = "nonAtomicTest"
+            }
+            $script:testNonAtomicDocuments = @($nonAtomicDocument1, $nonAtomicDocument2)
+            
+            $script:result = New-CosmosDbTransactionalBatch `
+                -Context $script:testContext `
+                -CollectionId $script:testCollection `
+                -PartitionKey $script:testDocumentId `
+                -Documents $script:testNonAtomicDocuments `
+                -OperationType 'Create' `
+                -IsAtomic $false `
+                -Verbose
+        }
+
+        It 'Should return expected batch operation results' {
+            $script:result | Should -HaveCount 2
+            $script:result[0].statusCode | Should -Be 201
+            $script:result[1].statusCode | Should -Be 201
+            $script:result[0].resourceBody.id | Should -Be $script:testNonAtomicDocuments[0].id
+            $script:result[1].resourceBody.id | Should -Be $script:testNonAtomicDocuments[1].id
+        }
+    }
+
+    Context 'When using transactional batch with ReturnJson parameter' {
+        It 'Should not throw an exception' {
+            $jsonDocument1 = @{
+                id      = [Guid]::NewGuid().ToString()
+                content = "JSON return document"
+                type    = "jsonTest"
+            }
+            $script:testJsonDocuments = @($jsonDocument1)
+            
+            $script:result = New-CosmosDbTransactionalBatch `
+                -Context $script:testContext `
+                -CollectionId $script:testCollection `
+                -PartitionKey $script:testDocumentId `
+                -Documents $script:testJsonDocuments `
+                -OperationType 'Create' `
+                -ReturnJson `
+                -Verbose
+        }
+
+        It 'Should return raw JSON string' {
+            $script:result | Should -BeOfType [System.String]
+            $script:result | Should -Match '"statusCode"'
+            $script:result | Should -Match '"resourceBody"'
+        }
+    }
+
+    Context 'When attempting to create more than 100 documents in a single transactional batch' {
+        It 'Should throw an exception due to batch size limit' {
+            # Create 101 documents to exceed the 100 operation limit
+            $tooManyDocuments = @()
+            for ($i = 1; $i -le 101; $i++) {
+                $tooManyDocuments += @{
+                    id      = "batchLimit_$([Guid]::NewGuid().ToString())"
+                    content = "Document $i exceeding batch limit"
+                    index   = $i
+                    type    = "batchLimitTest"
+                }
+            }
+            
+            {
+                New-CosmosDbTransactionalBatch `
+                    -Context $script:testContext `
+                    -CollectionId $script:testCollection `
+                    -PartitionKey $script:testDocumentId `
+                    -Documents $tooManyDocuments `
+                    -OperationType 'Create' `
+                    -Verbose
+            } | Should -Throw "*100*" # Should throw an error mentioning the 100 operation limit
+        }
+    }
+
+    Context 'When creating exactly 100 documents in a single transactional batch' {
+        It 'Should not throw an exception with maximum allowed batch size' {
+            # Create exactly 100 documents (the maximum allowed)
+            $maxBatchDocuments = @()
+            for ($i = 1; $i -le 100; $i++) {
+                $maxBatchDocuments += @{
+                    id      = "maxBatch_$([Guid]::NewGuid().ToString())"
+                    content = "Document $i at batch limit"
+                    index   = $i
+                    type    = "maxBatchTest"
+                }
+            }
+            
+            $script:result = New-CosmosDbTransactionalBatch `
+                -Context $script:testContext `
+                -CollectionId $script:testCollection `
+                -PartitionKey $script:testDocumentId `
+                -Documents $maxBatchDocuments `
+                -OperationType 'Create' `
+                -Verbose
+        }
+
+        It 'Should return expected batch operation results for 100 operations' {
+            $script:result | Should -HaveCount 100
+            $script:result[0].statusCode | Should -Be 201
+            $script:result[99].statusCode | Should -Be 201  # Check last operation
+        }
+    }
+
+    Context 'When attempting to create documents with conflicting partition keys in transactional batch' {
+        It 'Should throw an exception' {
+            $conflictDocument1 = @{
+                id      = [Guid]::NewGuid().ToString()
+                content = "Document with different partition key"
+                type    = "conflictTest"
+            }
+            
+            {
+                New-CosmosDbTransactionalBatch `
+                    -Context $script:testContext `
+                    -CollectionId $script:testCollection `
+                    -PartitionKey "differentPartitionKey" `
+                    -Documents @($conflictDocument1) `
+                    -OperationType 'Create' `
+                    -Verbose
+            } | Should -Throw
+        }
+    }
+
     Context 'When removing a existing UTF-8 document from a collection' {
         It 'Should not throw an exception' {
             $script:result = Remove-CosmosDbDocument `
