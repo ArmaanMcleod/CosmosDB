@@ -1,10 +1,11 @@
 function New-CosmosDbTransactionalBatch
 {
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     [OutputType([System.Object[]])]
     param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
+        [Alias('Connection')]
         [CosmosDb.Context]
         $Context,
 
