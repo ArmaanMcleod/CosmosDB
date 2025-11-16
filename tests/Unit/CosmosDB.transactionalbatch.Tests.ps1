@@ -159,6 +159,39 @@ InModuleScope $ProjectName {
             }
         }
 
+        Context 'When called with Read operation type' {
+            $script:result = $null
+            $invokeCosmosDbRequest_parameterfilter = {
+                $Method -eq 'Post' -and `
+                    $ResourceType -eq 'docs' -and `
+                    $Body -like '*"operationType":"Read"*'
+            }
+
+            Mock `
+                -CommandName Invoke-CosmosDbRequest `
+                -MockWith { $script:testBatchResult }
+
+            It 'Should not throw exception' {
+                $newCosmosDbTransactionalBatchParameters = @{
+                    Context       = $script:testContext
+                    CollectionId  = $script:testCollection
+                    PartitionKey  = $script:testPartitionKey
+                    Documents     = $script:testDocuments
+                    OperationType = 'Read'
+                    Verbose       = $true
+                }
+
+                { $script:result = New-CosmosDbTransactionalBatch @newCosmosDbTransactionalBatchParameters } | Should -Not -Throw
+            }
+
+            It 'Should call expected mocks with Read operation' {
+                Assert-MockCalled `
+                    -CommandName Invoke-CosmosDbRequest `
+                    -ParameterFilter $invokeCosmosDbRequest_parameterfilter `
+                    -Exactly -Times 1
+            }
+        }
+
         Context 'When called with IsAtomic set to false' {
             $script:result = $null
             $invokeCosmosDbRequest_parameterfilter = {
@@ -338,6 +371,38 @@ InModuleScope $ProjectName {
                 Assert-MockCalled `
                     -CommandName Invoke-CosmosDbRequest `
                     -Exactly -Times 0
+            }
+        }
+
+        Context 'When called with default OperationType (no explicit OperationType specified)' {
+            $script:result = $null
+            $invokeCosmosDbRequest_parameterfilter = {
+                $Method -eq 'Post' -and `
+                    $ResourceType -eq 'docs' -and `
+                    $Body -like '*"operationType":"Create"*'
+            }
+
+            Mock `
+                -CommandName Invoke-CosmosDbRequest `
+                -MockWith { $script:testBatchResult }
+
+            It 'Should not throw exception with default OperationType' {
+                $newCosmosDbTransactionalBatchParameters = @{
+                    Context      = $script:testContext
+                    CollectionId = $script:testCollection
+                    PartitionKey = $script:testPartitionKey
+                    Documents    = $script:testDocuments
+                    # No OperationType specified - should default to 'Create'
+                }
+
+                { $script:result = New-CosmosDbTransactionalBatch @newCosmosDbTransactionalBatchParameters } | Should -Not -Throw
+            }
+
+            It 'Should default to Create operation type when not specified' {
+                Assert-MockCalled `
+                    -CommandName Invoke-CosmosDbRequest `
+                    -ParameterFilter $invokeCosmosDbRequest_parameterfilter `
+                    -Exactly -Times 1
             }
         }
 
