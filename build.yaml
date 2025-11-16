@@ -129,7 +129,7 @@ CodeCoverage:
   CodeCoverageFilePattern: Codecov*.xml
 
 ####################################################
-#       Pester  Configuration                      #
+#       Pester Configuration                      #
 ####################################################
 Pester:
   OutputFormat: NUnitXML
