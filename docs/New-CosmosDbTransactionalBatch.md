@@ -15,12 +15,12 @@ Execute a transactional batch operation against a collection in a Cosmos DB data
 
 ```powershell
 New-CosmosDbTransactionalBatch -Context <Context> -PartitionKey <String> -CollectionId <String>
- -Documents <Object[]> [-OperationType <String>] [-IsAtomic <Boolean>] [-ReturnJson <switch>] [<CommonParameters>]
+ -Documents <Object[]> [-OperationType <String>] [-NoAtomic <switch>] [-ReturnJson <switch>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-This cmdlet will execute a transactional batch operation against a collection in a Cosmos DB database. All operations in the batch will target documents within the same partition key. If IsAtomic is true (default), either all operations succeed or all operations are rolled back.
+This cmdlet will execute a transactional batch operation against a collection in a Cosmos DB database. All operations in the batch will target documents within the same partition key. If NoAtomic is not set, either all operations succeed or all operations are rolled back. If NoAtomic is set, individual operations can succeed or fail independently. The cmdlet supports Create, Upsert, Read, Replace, and Delete operations.
 
 ## EXAMPLES
 
@@ -41,7 +41,7 @@ PS C:\> $documents = @(
     @{ id = 'doc1'; name = 'Alice Updated'; customerId = 'test' },
     @{ id = 'doc2'; name = 'Bob Updated'; customerId = 'test' }
 )
-PS C:\> New-CosmosDbTransactionalBatch -Context $context -PartitionKey 'test' -CollectionId 'Customers' -Documents $documents -OperationType 'Upsert' -IsAtomic $false
+PS C:\> New-CosmosDbTransactionalBatch -Context $context -PartitionKey 'test' -CollectionId 'Customers' -Documents $documents -OperationType 'Upsert' -NoAtomic
 ```
 
 ### Example 3: Return raw JSON response
@@ -134,9 +134,9 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -IsAtomic
+### -NoAtomic
 
-Determines whether the batch operation should be atomic. If true (default), either all operations succeed or all are rolled back. If false, individual operations can succeed or fail independently.
+Determines whether the batch operation should not be atomic. If set, individual operations can succeed or fail independently. If not set, either all operations succeed or all are rolled back.
 
 ```yaml
 Type: Boolean
@@ -182,10 +182,9 @@ Returns an array of batch operation results, one for each document in the batch.
 
 ## NOTES
 
-- All documents in a batch must belong to the same partition key
-- Maximum of 100 operations per batch
-- Each operation result includes statusCode, requestCharge, eTag, and resourceBody properties
-- When IsAtomic is true, any operation failure will roll back the entire batch
+- All documents in a batch must belong to the same partition key.
+- Maximum of 100 operations per batch.
+- Each operation result includes statusCode, requestCharge, eTag, and resourceBody properties.
 
 ## RELATED LINKS
 

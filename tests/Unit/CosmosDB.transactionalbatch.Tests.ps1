@@ -103,7 +103,7 @@ InModuleScope $ProjectName {
                     PartitionKey  = $script:testPartitionKey
                     Documents     = $script:testDocuments
                     OperationType = 'Create'
-                    IsAtomic      = $true
+                    NoAtomic      = $false
                     Verbose       = $true
                 }
 
@@ -144,7 +144,7 @@ InModuleScope $ProjectName {
                     PartitionKey  = $script:testPartitionKey
                     Documents     = $script:testDocuments
                     OperationType = 'Upsert'
-                    IsAtomic      = $true
+                    NoAtomic      = $false
                     Verbose       = $true
                 }
 
@@ -192,7 +192,7 @@ InModuleScope $ProjectName {
             }
         }
 
-        Context 'When called with IsAtomic set to false' {
+        Context 'When NoAtomic is set' {
             $script:result = $null
             $invokeCosmosDbRequest_parameterfilter = {
                 $Method -eq 'Post' -and `
@@ -209,7 +209,7 @@ InModuleScope $ProjectName {
                     CollectionId = $script:testCollection
                     PartitionKey = $script:testPartitionKey
                     Documents    = $script:testDocuments
-                    IsAtomic     = $false
+                    NoAtomic     = $true
                     Verbose      = $true
                 }
 

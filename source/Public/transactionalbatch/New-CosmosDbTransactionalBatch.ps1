@@ -30,11 +30,10 @@ function New-CosmosDbTransactionalBatch
         $OperationType = 'Create',
 
         [Parameter(Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [System.Boolean]
-        $IsAtomic = $true,
+        [System.Management.Automation.SwitchParameter]
+        $NoAtomic,
 
-        [Parameter()]
+        [Parameter(Mandatory = $false)]
         [System.Management.Automation.SwitchParameter]
         $ReturnJson
     )
@@ -52,7 +51,7 @@ function New-CosmosDbTransactionalBatch
 
     $headers = @{
         'x-ms-cosmos-is-batch-request' = $true
-        'x-ms-cosmos-batch-atomic'     = $IsAtomic
+        'x-ms-cosmos-batch-atomic'     = -not $NoAtomic.IsPresent
         'x-ms-documentdb-partitionkey' = "[`"$PartitionKey`"]"
     }
 

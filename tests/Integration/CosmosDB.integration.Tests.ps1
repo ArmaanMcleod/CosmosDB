@@ -1553,7 +1553,7 @@ Describe 'Cosmos DB Module' -Tag 'Integration' {
                 -PartitionKey $script:testDocumentId `
                 -Documents $script:testNonAtomicDocuments `
                 -OperationType 'Create' `
-                -IsAtomic $false `
+                -NoAtomic `
                 -Verbose
         }
 
