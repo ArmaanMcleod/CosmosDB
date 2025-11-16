@@ -1,4 +1,4 @@
-function New-CosmosDbTransactionalBatch 
+function New-CosmosDbTransactionalBatch
 {
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([System.Object[]])]
