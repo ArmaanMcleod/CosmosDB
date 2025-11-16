@@ -5,11 +5,11 @@ param ()
 $ProjectPath = "$PSScriptRoot\..\.." | Convert-Path
 $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
         ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try
-            { Test-ModuleManifest $_.FullName -ErrorAction Stop 
+        $(try {
+                Test-ModuleManifest $_.FullName -ErrorAction Stop 
             }
-            catch
-            { $false 
+            catch {
+                $false 
             } )
     }).BaseName
 
@@ -87,8 +87,8 @@ InModuleScope $ProjectName {
                 $Method -eq 'Post' -and `
                     $ResourceType -eq 'docs' -and `
                     $ResourcePath -eq "colls/$script:testCollection/docs" -and `
-                    $Headers.'x-ms-cosmos-is-batch-request' -eq 'true' -and `
-                    $Headers.'x-ms-cosmos-batch-atomic' -eq 'true' -and `
+                    $Headers.'x-ms-cosmos-is-batch-request' -eq $true -and `
+                    $Headers.'x-ms-cosmos-batch-atomic' -eq $true -and `
                     $Headers.'x-ms-documentdb-partitionkey' -eq "[`"$script:testPartitionKey`"]"
             }
 
@@ -163,7 +163,7 @@ InModuleScope $ProjectName {
             $script:result = $null
             $invokeCosmosDbRequest_parameterfilter = {
                 $Method -eq 'Post' -and `
-                    $Headers.'x-ms-cosmos-batch-atomic' -eq 'false'
+                    $Headers.'x-ms-cosmos-batch-atomic' -eq $false
             }
 
             Mock `
