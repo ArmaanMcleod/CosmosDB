@@ -57,7 +57,7 @@
         'formats\storedprocedures.formats.ps1xml',
         'formats\triggers.formats.ps1xml',
         'formats\userdefinedfunctions.formats.ps1xml',
-        'formats\users.formats.ps1xml'
+        'formats\users.formats.ps1xml',
         'formats\transactionalbatch.formats.ps1xml'
     )
 

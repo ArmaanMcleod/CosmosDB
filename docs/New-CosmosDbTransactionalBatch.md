@@ -55,7 +55,7 @@ PS C:\> $result | ConvertFrom-Json
 
 ### -Context
 
-This is an object containing the context information of the Cosmos DB database that will be deleted. It should be created by `New-CosmosDbContext`.
+This is an object containing the context information of the Cosmos DB database that will be accessed for the transactional batch operation. It should be created by `New-CosmosDbContext`.
 
 ```yaml
 Type: Context

@@ -1,3 +1,15 @@
+<#
+    .SYNOPSIS
+    Sets the type name for transactional batch operation objects.
+    
+    .DESCRIPTION
+    This function adds the custom type name 'CosmosDB.TransactionalBatchOperation' to 
+    batch operation objects to enable proper PowerShell formatting and type handling.
+    
+    .PARAMETER BatchOperations
+    An array of batch operation objects that will have their type name set to 
+    'CosmosDB.TransactionalBatchOperation'.
+#>
 function Set-CosmosDbTransactionalBatchOperationType
 {
     [CmdletBinding()]
