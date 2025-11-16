@@ -187,7 +187,3 @@ Returns an array of batch operation results, one for each document in the batch.
 - Each operation result includes statusCode, requestCharge, eTag, and resourceBody properties.
 
 ## RELATED LINKS
-
-[New-CosmosDbDocument](New-CosmosDbDocument.md)
-
-[New-CosmosDbContext](New-CosmosDbContext.md)
