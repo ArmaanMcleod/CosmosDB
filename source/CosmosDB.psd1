@@ -43,7 +43,8 @@
         'types\storedprocedures.types.ps1xml',
         'types\triggers.types.ps1xml',
         'types\userdefinedfunctions.types.ps1xml',
-        'types\users.types.ps1xml'
+        'types\users.types.ps1xml',
+        'types\transactionalbatch.types.ps1xml'
     )
 
     # Format files (.ps1xml) to be loaded when importing this module

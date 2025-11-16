@@ -29,7 +29,16 @@ REMAINS WITH THE USER.
                         <Label>RequestCharge</Label>
                     </TableColumnHeader>
                     <TableColumnHeader>
-                        <Label>ETag</Label>
+                        <Label>Id</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Etag</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>ResourceId</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Timestamp</Label>
                     </TableColumnHeader>
                 </TableHeaders>
                 <TableRowEntries>
@@ -39,12 +48,19 @@ REMAINS WITH THE USER.
                                 <PropertyName>statusCode</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <ScriptBlock>
-                                    '{0:F2}' -f $_.requestCharge
-                                </ScriptBlock>
+                                <PropertyName>requestCharge</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>eTag</PropertyName>
+                                <PropertyName>id</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Etag</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>ResourceId</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Timestamp</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>
@@ -61,9 +77,7 @@ REMAINS WITH THE USER.
                 <WideEntries>
                     <WideEntry>
                         <WideItem>
-                            <ScriptBlock>
-                                '{0} ({1:F2} RU)' -f $_.statusCode, $_.requestCharge
-                            </ScriptBlock>
+                            <PropertyName>statusCode</PropertyName>
                         </WideItem>
                     </WideEntry>
                 </WideEntries>
@@ -84,13 +98,24 @@ REMAINS WITH THE USER.
                                 <PropertyName>statusCode</PropertyName>
                             </ListItem>
                             <ListItem>
+                                <Label>RequestCharge</Label>
                                 <PropertyName>requestCharge</PropertyName>
                             </ListItem>
                             <ListItem>
-                                <PropertyName>eTag</PropertyName>
+                                <Label>Id</Label>
+                                <PropertyName>id</PropertyName>
                             </ListItem>
                             <ListItem>
-                                <PropertyName>resourceBody</PropertyName>
+                                <Label>Etag</Label>
+                                <PropertyName>Etag</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>Timestamp</Label>
+                                <PropertyName>Timestamp</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <Label>ResourceId</Label>
+                                <PropertyName>ResourceId</PropertyName>
                             </ListItem>
                         </ListItems>
                     </ListEntry>
