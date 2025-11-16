@@ -50,8 +50,8 @@ function New-CosmosDbTransactionalBatch
     $resourcePath = 'colls/{0}/docs' -f $CollectionId
 
     $headers = @{
-        'x-ms-cosmos-is-batch-request' = $IsAtomic
-        'x-ms-cosmos-batch-atomic'     = $true
+        'x-ms-cosmos-is-batch-request' = $true
+        'x-ms-cosmos-batch-atomic'     = $IsAtomic
         'x-ms-documentdb-partitionkey' = "[`"$PartitionKey`"]"
     }
 
