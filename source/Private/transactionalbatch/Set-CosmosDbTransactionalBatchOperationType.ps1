@@ -12,7 +12,7 @@
 #>
 function Set-CosmosDbTransactionalBatchOperationType
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([System.Object[]])]
     param
     (
@@ -21,9 +21,12 @@ function Set-CosmosDbTransactionalBatchOperationType
         $BatchOperations
     )
 
-    foreach ($item in $BatchOperations)
+    if ($PSCmdlet.ShouldProcess('Batch Operations', 'Set CosmosDB.TransactionalBatchOperation type'))
     {
-        $item.PSObject.TypeNames.Insert(0, 'CosmosDB.TransactionalBatchOperation')
+        foreach ($item in $BatchOperations)
+        {
+            $item.PSObject.TypeNames.Insert(0, 'CosmosDB.TransactionalBatchOperation')
+        }
     }
 
     return $BatchOperations

@@ -468,5 +468,24 @@ InModuleScope $ProjectName {
                 $script:result[1].resourceBody.id | Should -Be 'doc2'
             }
         }
+
+        Context 'When called with WhatIf parameter' {
+            $script:result = $null
+            $testOperations = @(
+                @{ statusCode = 201; resourceBody = @{ id = 'doc1' } }
+            )
+
+            It 'Should not throw exception' {
+                { $script:result = Set-CosmosDbTransactionalBatchOperationType -BatchOperations $testOperations -WhatIf } | Should -Not -Throw
+            }
+
+            It 'Should not return null when WhatIf is specified' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should not modify objects when WhatIf is specified' {
+                $testOperations[0].PSObject.TypeNames[0] | Should -Not -Be 'CosmosDB.TransactionalBatchOperation'
+            }
+        }
     }
 }
