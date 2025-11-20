@@ -14,13 +14,17 @@ Execute a transactional batch operation against a collection in a Cosmos DB data
 ## SYNTAX
 
 ```powershell
-New-CosmosDbTransactionalBatch -Context <Context> -PartitionKey <String> -CollectionId <String>
- -Documents <Object[]> [-OperationType <String>] [-NoAtomic <switch>] [-ReturnJson <switch>] [<CommonParameters>]
+New-CosmosDbTransactionalBatch -Context <Context> -PartitionKey <String> 
+ -CollectionId <String> -Documents <Object[]> [-OperationType <String>] 
+ [-NoAtomic <switch>] [-ReturnJson <switch>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-This cmdlet will execute a transactional batch operation against a collection in a Cosmos DB database. All operations in the batch will target documents within the same partition key. If NoAtomic is not set, either all operations succeed or all operations are rolled back. If NoAtomic is set, individual operations can succeed or fail independently. The cmdlet supports Create, Upsert, Read, Replace, and Delete operations.
+This cmdlet will execute a transactional batch operation against a collection in
+a Cosmos DB database.
+
+All operations in the batch will target documents within the same partition key.
 
 ## EXAMPLES
 
@@ -31,7 +35,12 @@ PS C:\> $documents = @(
     @{ id = 'doc1'; name = 'Alice'; customerId = 'test' },
     @{ id = 'doc2'; name = 'Bob'; customerId = 'test' }
 )
-PS C:\> New-CosmosDbTransactionalBatch -Context $context -PartitionKey 'test' -CollectionId 'Customers' -Documents $documents -OperationType 'Create'
+PS C:\> New-CosmosDbTransactionalBatch `
+    -Context $context `
+    -PartitionKey 'test' `
+    -CollectionId 'Customers' `
+    -Documents $documents `
+    -OperationType 'Create'
 ```
 
 ### Example 2: Upsert documents with atomic behavior disabled
@@ -41,13 +50,25 @@ PS C:\> $documents = @(
     @{ id = 'doc1'; name = 'Alice Updated'; customerId = 'test' },
     @{ id = 'doc2'; name = 'Bob Updated'; customerId = 'test' }
 )
-PS C:\> New-CosmosDbTransactionalBatch -Context $context -PartitionKey 'test' -CollectionId 'Customers' -Documents $documents -OperationType 'Upsert' -NoAtomic
+PS C:\> New-CosmosDbTransactionalBatch `
+    -Context $context `
+    -PartitionKey 'test' `
+    -CollectionId 'Customers' `
+    -Documents $documents `
+    -OperationType 'Upsert' `
+    -NoAtomic
 ```
 
 ### Example 3: Return raw JSON response
 
 ```powershell
-PS C:\> $result = New-CosmosDbTransactionalBatch -Context $context -PartitionKey 'test' -CollectionId 'Customers' -Documents $documents -ReturnJson
+PS C:\> $result = New-CosmosDbTransactionalBatch `
+    -Context $context `
+    -PartitionKey 'test' `
+    -CollectionId `
+    'Customers' `
+    -Documents $documents `
+    -ReturnJson
 PS C:\> $result | ConvertFrom-Json
 ```
 
@@ -55,7 +76,10 @@ PS C:\> $result | ConvertFrom-Json
 
 ### -Context
 
-This is an object containing the context information of the Cosmos DB database that will be accessed for the transactional batch operation. It should be created by `New-CosmosDbContext`.
+This is an object containing the context information of the Cosmos DB database
+that will be accessed for the transactional batch operation.
+
+It should be created by `New-CosmosDbContext`.
 
 ```yaml
 Type: Context
@@ -71,7 +95,9 @@ Accept wildcard characters: False
 
 ### -PartitionKey
 
-This is the partition key value for all documents in the batch. All documents must belong to the same partition.
+This is the partition key value for all documents in the batch.
+
+All documents must belong to the same partition.
 
 ```yaml
 Type: String
@@ -103,7 +129,9 @@ Accept wildcard characters: False
 
 ### -Documents
 
-An array of documents to include in the batch operation. Each document will be processed using the specified OperationType.
+An array of documents to include in the batch operation.
+
+Each document will be processed using the specified OperationType.
 
 ```yaml
 Type: Object[]
@@ -119,7 +147,7 @@ Accept wildcard characters: False
 
 ### -OperationType
 
-The type of operation to perform on each document in the batch. Valid values are: Create, Upsert, Read, Replace, Delete.
+The type of operation to perform on each document in the batch.
 
 ```yaml
 Type: String
@@ -136,7 +164,11 @@ Accept wildcard characters: False
 
 ### -NoAtomic
 
-Determines whether the batch operation should not be atomic. If set, individual operations can succeed or fail independently. If not set, either all operations succeed or all are rolled back.
+Determines whether the batch operation should not be atomic.
+
+If set, individual operations can succeed or fail independently.
+
+If not set, either all operations succeed or all are rolled back.
 
 ```yaml
 Type: Boolean
@@ -168,7 +200,9 @@ Accept wildcard characters: False
 
 ### CommonParameters
 
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable,
+-Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
@@ -184,6 +218,5 @@ Returns an array of batch operation results, one for each document in the batch.
 
 - All documents in a batch must belong to the same partition key.
 - Maximum of 100 operations per batch.
-- Each operation result includes statusCode, requestCharge, eTag, and resourceBody properties.
 
 ## RELATED LINKS
