@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `New-CosmosDbTransactionalBatch` function for executing atomic transactional batch
-  operations against a collection. Supports Create, Upsert, Read, Replace, and Delete
+- Added `New-CosmosDbTransactionalBatch` function for executing atomic
+  transactional batch operations against a collection.
+  Supports Create, Upsert, Read, Replace, and Delete
   operations on multiple documents within the same partition key - fixes [Issue #516](https://github.com/PlagueHO/CosmosDB/issues/516).
 
 ### Operational Changes
